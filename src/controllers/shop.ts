@@ -1,14 +1,14 @@
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
+import { RequestHandler } from 'express'
+import PDFDocument from 'pdfkit';
 
-const PDFDocument = require('pdfkit');
-
-const Product = require('../models/product');
-const Order = require('../models/order');
+import Product from '../models/product';
+import Order from '../models/order';
 
 const ITEMS_PER_PAGE = 2;
 
-exports.getProducts = (req, res, next) => {
+export const getProducts: RequestHandler = (req, res, next) => {
   const page = +req.query.page || 1;
   let totalItems;
 
@@ -40,7 +40,7 @@ exports.getProducts = (req, res, next) => {
     });
 };
 
-exports.getProduct = (req, res, next) => {
+export const getProduct: RequestHandler = (req, res, next) => {
   const prodId = req.params.productId;
   Product.findById(prodId)
     .then(product => {
@@ -57,7 +57,7 @@ exports.getProduct = (req, res, next) => {
     });
 };
 
-exports.getIndex = (req, res, next) => {
+export const getIndex: RequestHandler = (req, res, next) => {
   const page = +req.query.page || 1;
   let totalItems;
 
@@ -89,7 +89,7 @@ exports.getIndex = (req, res, next) => {
     });
 };
 
-exports.getCart = (req, res, next) => {
+export const getCart: RequestHandler = (req, res, next) => {
   req.user
     .populate('cart.items.productId')
     .execPopulate()
@@ -108,7 +108,7 @@ exports.getCart = (req, res, next) => {
     });
 };
 
-exports.postCart = (req, res, next) => {
+export const postCart: RequestHandler = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findById(prodId)
     .then(product => {
@@ -125,7 +125,7 @@ exports.postCart = (req, res, next) => {
     });
 };
 
-exports.postCartDeleteProduct = (req, res, next) => {
+export const postCartDeleteProduct: RequestHandler = (req, res, next) => {
   const prodId = req.body.productId;
   req.user
     .removeFromCart(prodId)
@@ -139,7 +139,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
     });
 };
 
-exports.getCheckout = (req, res, next) => {
+export const getCheckout: RequestHandler = (req, res, next) => {
   req.user
     .populate('cart.items.productId')
     .execPopulate()
@@ -163,7 +163,7 @@ exports.getCheckout = (req, res, next) => {
     });
 };
 
-exports.postOrder = (req, res, next) => {
+export const postOrder: RequestHandler = (req, res, next) => {
   req.user
     .populate('cart.items.productId')
     .execPopulate()
@@ -193,7 +193,7 @@ exports.postOrder = (req, res, next) => {
     });
 };
 
-exports.getOrders = (req, res, next) => {
+export const getOrders: RequestHandler = (req, res, next) => {
   Order.find({ 'user.userId': req.user._id })
     .then(orders => {
       res.render('shop/orders', {
@@ -209,7 +209,7 @@ exports.getOrders = (req, res, next) => {
     });
 };
 
-exports.getInvoice = (req, res, next) => {
+export const getInvoice: RequestHandler = (req, res, next) => {
   const orderId = req.params.orderId;
   Order.findById(orderId)
     .then(order => {
@@ -242,11 +242,11 @@ exports.getInvoice = (req, res, next) => {
           .fontSize(14)
           .text(
             prod.product.title +
-              ' - ' +
-              prod.quantity +
-              ' x ' +
-              '$' +
-              prod.product.price
+            ' - ' +
+            prod.quantity +
+            ' x ' +
+            '$' +
+            prod.product.price
           );
       });
       pdfDoc.text('---');

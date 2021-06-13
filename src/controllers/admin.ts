@@ -1,12 +1,11 @@
-const mongoose = require('mongoose');
+import { RequestHandler } from 'express';
+import * as fileHelper from '../util/file';
 
-const fileHelper = require('../util/file');
+import { validationResult } from 'express-validator/check';
 
-const { validationResult } = require('express-validator/check');
+import Product from '../models/product';
 
-const Product = require('../models/product');
-
-exports.getAddProduct = (req, res, next) => {
+export const getAddProduct: RequestHandler = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
@@ -17,7 +16,7 @@ exports.getAddProduct = (req, res, next) => {
   });
 };
 
-exports.postAddProduct = (req, res, next) => {
+export const postAddProduct: RequestHandler = (req, res, next) => {
   const title = req.body.title;
   const image = req.file;
   const price = req.body.price;
@@ -95,7 +94,7 @@ exports.postAddProduct = (req, res, next) => {
     });
 };
 
-exports.getEditProduct = (req, res, next) => {
+export const getEditProduct: RequestHandler = (req, res, next) => {
   const editMode = req.query.edit;
   if (!editMode) {
     return res.redirect('/');
@@ -123,7 +122,7 @@ exports.getEditProduct = (req, res, next) => {
     });
 };
 
-exports.postEditProduct = (req, res, next) => {
+export const postEditProduct: RequestHandler = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
@@ -173,7 +172,7 @@ exports.postEditProduct = (req, res, next) => {
     });
 };
 
-exports.getProducts = (req, res, next) => {
+export const getProducts: RequestHandler = (req, res, next) => {
   Product.find({ userId: req.user._id })
     // .select('title price -_id')
     // .populate('userId', 'name')
@@ -192,7 +191,7 @@ exports.getProducts = (req, res, next) => {
     });
 };
 
-exports.deleteProduct = (req, res, next) => {
+export const deleteProduct: RequestHandler = (req, res, next) => {
   const prodId = req.params.productId;
   Product.findById(prodId)
     .then(product => {

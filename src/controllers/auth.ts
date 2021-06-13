@@ -1,11 +1,11 @@
-const crypto = require('crypto');
+import { randomBytes } from 'crypto';
+import { RequestHandler } from 'express';
+import bcrypt from 'bcryptjs';
+import * as nodemailer from 'nodemailer';
+import * as sendgridTransport from 'nodemailer-sendgrid-transport';
+import { validationResult } from 'express-validator/check';
 
-const bcrypt = require('bcryptjs');
-const nodemailer = require('nodemailer');
-const sendgridTransport = require('nodemailer-sendgrid-transport');
-const { validationResult } = require('express-validator/check');
-
-const User = require('../models/user');
+import User from '../models/user';
 
 const transporter = nodemailer.createTransport(
   sendgridTransport({
@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport(
   })
 );
 
-exports.getLogin = (req, res, next) => {
+export const getLogin: RequestHandler = (req, res, next) => {
   let message = req.flash('error');
   if (message.length > 0) {
     message = message[0];
@@ -35,7 +35,7 @@ exports.getLogin = (req, res, next) => {
   });
 };
 
-exports.getSignup = (req, res, next) => {
+export const getSignup: RequestHandler = (req, res, next) => {
   let message = req.flash('error');
   if (message.length > 0) {
     message = message[0];
@@ -55,7 +55,7 @@ exports.getSignup = (req, res, next) => {
   });
 };
 
-exports.postLogin = (req, res, next) => {
+export const postLogin: RequestHandler = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -121,7 +121,7 @@ exports.postLogin = (req, res, next) => {
     });
 };
 
-exports.postSignup = (req, res, next) => {
+export const postSignup: RequestHandler = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -167,14 +167,14 @@ exports.postSignup = (req, res, next) => {
     });
 };
 
-exports.postLogout = (req, res, next) => {
+export const postLogout: RequestHandler = (req, res, next) => {
   req.session.destroy(err => {
     console.log(err);
     res.redirect('/');
   });
 };
 
-exports.getReset = (req, res, next) => {
+export const getReset = (req, res, next) => {
   let message = req.flash('error');
   if (message.length > 0) {
     message = message[0];
@@ -188,8 +188,8 @@ exports.getReset = (req, res, next) => {
   });
 };
 
-exports.postReset = (req, res, next) => {
-  crypto.randomBytes(32, (err, buffer) => {
+export const postReset: RequestHandler = (req, res, next) => {
+  randomBytes(32, (err, buffer) => {
     if (err) {
       console.log(err);
       return res.redirect('/reset');
@@ -225,7 +225,7 @@ exports.postReset = (req, res, next) => {
   });
 };
 
-exports.getNewPassword = (req, res, next) => {
+export const getNewPassword: RequestHandler = (req, res, next) => {
   const token = req.params.token;
   User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
     .then(user => {
@@ -250,7 +250,7 @@ exports.getNewPassword = (req, res, next) => {
     });
 };
 
-exports.postNewPassword = (req, res, next) => {
+export const postNewPassword: RequestHandler = (req, res, next) => {
   const newPassword = req.body.password;
   const userId = req.body.userId;
   const passwordToken = req.body.passwordToken;

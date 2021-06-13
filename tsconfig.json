@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "pretty": true,
+      "sourceMap": true,
+      "target": "es5",
+      "resolveJsonModule": true,
+      "outDir": "./dist",
+  },
+  "include": [
+      "src/app.ts",
+      "config/*.ts",
+      "src/models/*.ts",
+      "routings/**/*.ts"
+  ],
+  "exclude": [
+      "node_modules"
+  ]
+}

@@ -1,7 +1,4 @@
-const mongoose = require('mongoose');
-
-const Schema = mongoose.Schema;
-
+import { Schema, model } from 'mongoose';
 const productSchema = new Schema({
   title: {
     type: String,
@@ -26,7 +23,7 @@ const productSchema = new Schema({
   }
 });
 
-module.exports = mongoose.model('Product', productSchema);
+export default model('Product', productSchema);
 
 // const mongodb = require('mongodb');
 // const getDb = require('../util/database').getDb;

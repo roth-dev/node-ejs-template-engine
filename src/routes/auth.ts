@@ -1,10 +1,11 @@
-const express = require('express');
-const { check, body } = require('express-validator/check');
+import { Router } from 'express';
+import { check, body } from 'express-validator/check';
 
-const authController = require('../controllers/auth');
-const User = require('../models/user');
+import * as authController from '../controllers/auth';
 
-const router = express.Router();
+import User from '../models/user';
+
+const router = Router();
 
 router.get('/login', authController.getLogin);
 
@@ -74,4 +75,4 @@ router.get('/reset/:token', authController.getNewPassword);
 
 router.post('/new-password', authController.postNewPassword);
 
-module.exports = router;
+export default router;
